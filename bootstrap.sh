@@ -115,10 +115,10 @@ if [ ! -f "$HOME/.rbenv/version" ]; then
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
   git clone git://github.com/sstephenson/ruby-build.git $HOME/.rbenv/plugins/ruby-build &> /dev/null
   export PATH="$HOME/.rbenv/bin:$PATH"
-  eval "$(rbenv init -)"
-  puts "* Installing MRI Ruby 1.9"
-  rbenv install $RUBY_VERSION
-  rbenv rehash
+  eval "$($HOME/.rbenv/bin/rbenv init -)"
+  echo "* Installing MRI Ruby 1.9"
+  $HOME/.rbenv/bin/rbenv install $RUBY_VERSION
+  $HOME/.rbenv/bin/rbenv rehash
   RBENV_VERSION=$RUBY_VERSION gem install bundler
 fi
 
@@ -137,7 +137,7 @@ fi
 
 echo "* Installing Deltacloud dependencies"
 cd $WORKDIR/server
-rbenv local $RUBY_VERSION
+$HOME/.rbenv/bin/rbenv local $RUBY_VERSION
 bundle install
 
 echo "* Complete! Happy hacking!"
