@@ -40,20 +40,12 @@ echo "* Checking runtime dependencies..."
 
 if [ "$DISTRO" == "fedora" ]; then
   INSTALL_PKGS=""
-  [ -z "$(rpm -qa git)" ] && INSTALL_PKGS="git"
-  [ -z "$(rpm -qa gcc)" ] && INSTALL_PKGS="$INSTALL_PKGS gcc"
-  [ -z "$(rpm -qa gcc-c++)" ] && INSTALL_PKGS="$INSTALL_PKGS gcc-c++"
-  [ -z "$(rpm -qa make)" ] && INSTALL_PKGS="$INSTALL_PKGS make"
-  [ -z "$(rpm -qa libxml)" ] && INSTALL_PKGS="$INSTALL_PKGS libxml"
-  [ -z "$(rpm -qa libxml2-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS libxml2-devel"
-  [ -z "$(rpm -qa libxslt)" ] && INSTALL_PKGS="$INSTALL_PKGS libxslt"
-  [ -z "$(rpm -qa libxslt-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS libxslt-devel"
-  [ -z "$(rpm -qa openssl-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS openssl-devel"
-  [ -z "$(rpm -qa readline-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS readline-devel"
-  [ -z "$(rpm -qa zlib-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS zlib-devel"
-  [ -z "$(rpm -qa libyaml-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS libyaml-devel"
-  [ -z "$(rpm -qa bison)" ] && INSTALL_PKGS="$INSTALL_PKGS bison"
-  [ -z "$(rpm -qa flex)" ] && INSTALL_PKGS="$INSTALL_PKGS flex"
+  for thisrpm in git gcc gcc-c++ make libxml2 libxml2-devel libxslt libxslt-devel openssl-devel readline-devel zlib-devel libyaml-devel bison flex; do
+    # Check if rpms are installed
+    if ! `rpm -q --quiet ${thisrpm}`; then
+      INSTALL_PKGS="$INSTALL_PKGS ${thisrpm}"
+    fi
+  done
   if [ ! -z "$INSTALL_PKGS" ]; then
     echo "* Following packages need to be installed: $INSTALL_PKGS"
     su -c "yum install -y $INSTALL_PKGS"
@@ -62,19 +54,12 @@ fi
 
 if [ "$DISTRO" == "suse" ]; then
   INSTALL_PKGS=""
-  [ -z "$(rpm -qa git)" ] && INSTALL_PKGS="git"
-  [ -z "$(rpm -qa gcc)" ] && INSTALL_PKGS="$INSTALL_PKGS gcc"
-  [ -z "$(rpm -qa bison)" ] && INSTALL_PKGS="$INSTALL_PKGS bison"
-  [ -z "$(rpm -qa flex)" ] && INSTALL_PKGS="$INSTALL_PKGS flex"
-  [ -z "$(rpm -qa gcc-c++)" ] && INSTALL_PKGS="$INSTALL_PKGS gcc-c++"
-  [ -z "$(rpm -qa automake)" ] && INSTALL_PKGS="$INSTALL_PKGS automake"
-  [ -z "$(rpm -qa libxml)" ] && INSTALL_PKGS="$INSTALL_PKGS libxml"
-  [ -z "$(rpm -qa libxml2-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS libxml2-devel"
-  [ -z "$(rpm -qa libxslt)" ] && INSTALL_PKGS="$INSTALL_PKGS libxslt"
-  [ -z "$(rpm -qa libxslt-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS libxslt-devel"
-  [ -z "$(rpm -qa openssl-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS openssl-devel"
-  [ -z "$(rpm -qa readline-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS readline-devel"
-  [ -z "$(rpm -qa libyaml-devel)" ] && INSTALL_PKGS="$INSTALL_PKGS libyaml-devel"
+  for thisrpm in git gcc gcc-c++ automake libxml libxml2-devel libxslt libxslt-devel openssl-devel readline-devel zlib-devel libyaml-devel bison flex; do
+    # Check if rpms are installed
+    if ! `rpm -q --quiet ${thisrpm}`; then
+      INSTALL_PKGS="$INSTALL_PKGS ${thisrpm}"
+    fi
+  done
   if [ ! -z "$INSTALL_PKGS" ]; then
     echo "* Following packages need to be installed: $INSTALL_PKGS"
     su -c "yum install -y $INSTALL_PKGS"
