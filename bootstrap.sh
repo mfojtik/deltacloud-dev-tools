@@ -12,7 +12,7 @@ DISTRO=""
 [ -f /etc/debian_version ] && DISTRO="debian"
 
 # OSX:
-case $OSTYPE in darwin*) DISTRO="mac" ;; esac
+case $OSTYPE in darwin*) DISTRO="osx" ;; esac
 
 # Windows
 case $OSTYPE in windows*) DISTRO="win" ;; esac
