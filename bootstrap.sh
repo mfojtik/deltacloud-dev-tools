@@ -40,7 +40,7 @@ echo "* Checking runtime dependencies..."
 
 if [ "$DISTRO" == "fedora" ]; then
   INSTALL_PKGS=""
-  for thisrpm in git gcc gcc-c++ make libxml2 libxml2-devel libxslt libxslt-devel openssl-devel readline-devel zlib-devel libyaml-devel bison flex; do
+  for thisrpm in git gcc gcc-c++ make libxml2 libxml2-devel libxslt libxslt-devel openssl-devel readline-devel sqlite-devel zlib-devel libyaml-devel bison flex; do
     # Check if rpms are installed
     if ! `rpm -q --quiet ${thisrpm}`; then
       INSTALL_PKGS="$INSTALL_PKGS ${thisrpm}"
