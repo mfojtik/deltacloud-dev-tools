@@ -87,11 +87,11 @@ fi
 # Install 'rbenv' - a simple Ruby version manager. It will install Ruby to your
 # homedir without touching your core operating system.
 #
-# You can change the Ruby version using: $ export RUBY_VERSION="1.9.3-p286"
+# You can change the Ruby version using: $ export RUBY_VERSION="1.9.3-p362"
 #
 # The full list of supported rubies: https://github.com/sstephenson/ruby-build/tree/master/share/ruby-build
 #
-[ -z "$RUBY_VERSION" ] && RUBY_VERSION="1.9.3-p286"
+[ -z "$RUBY_VERSION" ] && RUBY_VERSION="1.9.3-p362"
 
 # Install rbenv
 if [ ! -d "$HOME/.rbenv/versions" ]; then
