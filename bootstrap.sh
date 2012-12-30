@@ -40,7 +40,7 @@ echo "* Checking runtime dependencies..."
 
 if [ "$DISTRO" == "fedora" ]; then
   INSTALL_PKGS=""
-  for thisrpm in git gcc gcc-c++ make libxml2 libxml2-devel libxslt libxslt-devel openssl-devel readline-devel zlib-devel libyaml-devel bison flex; do
+  for thisrpm in git gcc gcc-c++ make libxml2 libxml2-devel libxslt libxslt-devel openssl-devel readline-devel sqlite-devel zlib-devel libyaml-devel bison flex; do
     # Check if rpms are installed
     if ! `rpm -q --quiet ${thisrpm}`; then
       INSTALL_PKGS="$INSTALL_PKGS ${thisrpm}"
@@ -87,25 +87,55 @@ fi
 # Install 'rbenv' - a simple Ruby version manager. It will install Ruby to your
 # homedir without touching your core operating system.
 #
-# You can change the Ruby version using: $ export RUBY_VERSION="1.9.3-p286"
+# You can change the Ruby version using: $ export RUBY_VERSION="1.9.3-p362"
 #
 # The full list of supported rubies: https://github.com/sstephenson/ruby-build/tree/master/share/ruby-build
 #
-[ -z $RUBY_VERSION] && RUBY_VERSION="1.9.3-p286"
+[ -z "$RUBY_VERSION" ] && RUBY_VERSION="1.9.3-p362"
 
-if [ ! -f "$HOME/.rbenv/version" ]; then
+# Install rbenv
+if [ ! -d "$HOME/.rbenv/versions" ]; then
   echo "* Installing rbenv"
   git clone git://github.com/sstephenson/rbenv.git $HOME/.rbenv &> /dev/null
   echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bash_profile
   echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
   git clone git://github.com/sstephenson/ruby-build.git $HOME/.rbenv/plugins/ruby-build &> /dev/null
+fi
+
+# Ensure rbenv is in the path
+which rbenv > /dev/null 2>&1
+RETURN_CODE=$?
+if [ $RETURN_CODE -ne 0 ]; then
   export PATH="$HOME/.rbenv/bin:$PATH"
   eval "$($HOME/.rbenv/bin/rbenv init -)"
-  echo "* Installing MRI Ruby 1.9"
-  $HOME/.rbenv/bin/rbenv install $RUBY_VERSION
-  $HOME/.rbenv/bin/rbenv rehash
-  RBENV_VERSION=$RUBY_VERSION gem install bundler
 fi
+
+# Install the requested version of Ruby if not already present
+CURRENT_RUBY=`rbenv global`
+echo Current ruby: $CURRENT_RUBY
+echo Ruby version desired: $RUBY_VERSION
+if [ "x$CURRENT_RUBY" != "x$RUBY_VERSION" ]; then
+  echo "* Installing MRI Ruby 1.9"
+  rbenv install $RUBY_VERSION
+  rbenv global $RUBY_VERSION
+  rbenv rehash
+fi
+
+# Work out where rbenv installed the ruby command
+RUBY_PREFIX=`rbenv prefix`
+export PATH="$RUBY_PREFIX/bin:$PATH"
+
+# Install rubygems
+git clone git://github.com/rubygems/rubygems.git $HOME/rubygems &> /dev/null
+cd $HOME/rubygems
+# Pick a recent tag of Rubygems (may need adjusting)
+git checkout v1.8.24
+ruby setup.rb
+rbenv rehash
+
+# Install bundler
+gem install bundler
+rbenv rehash
 
 # Prepare and clone your working directory
 #
@@ -122,7 +152,6 @@ fi
 
 echo "* Installing Deltacloud dependencies"
 cd $WORKDIR/server
-$HOME/.rbenv/bin/rbenv local $RUBY_VERSION
 bundle install
 
 echo "* Complete! Happy hacking!"
