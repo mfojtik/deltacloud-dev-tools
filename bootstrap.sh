@@ -91,7 +91,7 @@ fi
 #
 # The full list of supported rubies: https://github.com/sstephenson/ruby-build/tree/master/share/ruby-build
 #
-[ -z $RUBY_VERSION] && RUBY_VERSION="1.9.3-p286"
+[ -z "$RUBY_VERSION" ] && RUBY_VERSION="1.9.3-p286"
 
 # Install rbenv
 if [ ! -d "$HOME/.rbenv/versions" ]; then
